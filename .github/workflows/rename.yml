@@ -1,0 +1,29 @@
+name: Strip upload prefixes
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+permissions:
+  contents: write
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rename files
+        run: |
+          set -e
+          for d in . assets; do
+            cd "$GITHUB_WORKSPACE/$d"
+            for f in [0-9]*-*; do
+              [ -e "$f" ] || continue
+              git mv "$f" "${f#*-}"
+            done
+          done
+      - name: Commit and push
+        run: |
+          git config user.name "bestwurld23"
+          git config user.email "bestwurld23@users.noreply.github.com"
+          git commit -m "Strip numeric upload prefixes from filenames" || echo nothing-to-commit
+          git push
