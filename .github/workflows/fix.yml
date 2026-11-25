@@ -1,0 +1,16 @@
+name: fix-upload-prefixes
+on: [push]
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          git config user.name "site-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git mv -f 1-gimme-the-loot.html gimme-the-loot.html
+          git mv -f 2-liberia.html liberia.html
+          git mv -f 3-services.html services.html
+          git commit -m "fix upload prefixes" && git push
